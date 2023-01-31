@@ -14,6 +14,7 @@ public class CustomerService {
                 .lastName(request.lastName())
                 .email(request.email())
                 .build();
+        // validate email + ensure no duplicates
         customerRepository.saveAndFlush(customer);
         FraudCheckResponse fraudCheckResponse = restTemplate.getForObject(
             "http://localhost:8081/api/v1/fraud-check/{customerId}",
@@ -24,5 +25,6 @@ public class CustomerService {
         if (fraudCheckResponse.isFraudster()) {
             throw new IllegalStateException("Fraudster");
         }
+        // notification
     }
 }
